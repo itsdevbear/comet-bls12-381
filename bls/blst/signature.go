@@ -12,9 +12,6 @@ import (
 
 var dst = []byte("BLS_SIG_BLS12381G2_XMD:SHA-256_SSWU_RO_POP_")
 
-const scalarBytes = 32
-const randBitsEntropy = 64
-
 // Signature used in the BLS signature scheme.
 type Signature struct {
 	s *blstSignature
