@@ -7,8 +7,12 @@ import (
 	"fmt"
 
 	bls "github.com/berachain/comet-bls12-381/bls"
+	"github.com/berachain/comet-bls12-381/bls/cache"
 	"github.com/berachain/comet-bls12-381/bls/params"
 )
+
+var maxKeys = 2_000_000
+var pubkeyCache *cache.LRU[[48]byte, bls.PubKey]
 
 // PublicKey used in the BLS signature scheme.
 type PublicKey struct {
@@ -42,6 +46,14 @@ func publicKeyFromBytes(pubKey []byte, cacheCopy bool) (bls.PubKey, error) {
 		return nil, fmt.Errorf("public key must be %d bytes", params.BLSPubkeyLength)
 	}
 
+	newKey := (*[params.BLSPubkeyLength]byte)(pubKey)
+	if cv, ok := pubkeyCache.Get(*newKey); ok {
+		if cacheCopy {
+			return cv.Copy(), nil
+		}
+		return cv, nil
+	}
+
 	// Subgroup check NOT done when decompressing pubkey.
 	p := new(blstPublicKey).Uncompress(pubKey)
 	if p == nil {
@@ -53,5 +65,9 @@ func publicKeyFromBytes(pubKey []byte, cacheCopy bool) (bls.PubKey, error) {
 		return nil, errors.New("publickey is infinite")
 	}
 
-	return &PublicKey{p: p}, nil
+	pubKeyObj := &PublicKey{p: p}
+	copiedKey := pubKeyObj.Copy()
+	cacheKey := *newKey
+	pubkeyCache.Add(cacheKey, copiedKey)
+	return pubKeyObj, nil
 }

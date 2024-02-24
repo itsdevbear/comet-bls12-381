@@ -37,14 +37,14 @@ func SecretKeyFromBytes(privKey []byte) (bls.SecretKey, error) {
 	if len(privKey) != 32 { // TODO: use config
 		return nil, fmt.Errorf("secret key must be %d bytes", 32)
 	}
+	if IsZero(privKey) {
+		return nil, errors.New("received secret key is zero")
+	}
 	secKey := new(blst.SecretKey).Deserialize(privKey)
 	if secKey == nil {
 		return nil, errors.New("could not unmarshal bytes into secret key")
 	}
 	wrappedKey := &bls12SecretKey{p: secKey}
-	if IsZero(privKey) {
-		return nil, errors.New("received secret key is zero")
-	}
 	return wrappedKey, nil
 }
 

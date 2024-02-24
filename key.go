@@ -80,7 +80,6 @@ func NewPrivateKeyFromBytes(bz []byte) (PrivKey, error) {
 
 func GenPrivKey() (PrivKey, error) {
 	secretKey, err := blst.RandKey()
-
 	return PrivKey(secretKey.Marshal()), err
 }
 

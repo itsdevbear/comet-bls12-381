@@ -1,0 +1,42 @@
+name: Go
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+jobs:
+  gosec:
+    name: Gosec scan
+    runs-on: ubuntu-latest
+    env:
+      GO111MODULE: on
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Go 1.21
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.21.5'
+      - name: Run Gosec Security Scanner
+        run: | # https://github.com/securego/gosec/issues/469
+          export PATH=$PATH:$(go env GOPATH)/bin
+          go install github.com/securego/gosec/v2/cmd/gosec@v2.15.0
+          gosec -exclude-generated -exclude=G307 -exclude-dir=crypto/bls/herumi ./...
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Go 1.21
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.21.5'
+
+      - name: Golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: v1.55.2
+          args: --config=.golangci.yml --out-${NO_FUTURE}format colored-line-number

@@ -78,13 +78,13 @@ func BenchmarkPublicKeyFromBytes(b *testing.B) {
 	pubkey := priv.PublicKey()
 	pubkeyBytes := pubkey.Marshal()
 
-	// b.Run("cache on", func(b *testing.B) {
-	// 	blst.EnableCaches()
-	// 	for i := 0; i < b.N; i++ {
-	// 		_, err := blst.PublicKeyFromBytes(pubkeyBytes)
-	// 		require.NoError(b, err)
-	// 	}
-	// })
+	b.Run("cache on", func(b *testing.B) {
+		blst.EnableCaches()
+		for i := 0; i < b.N; i++ {
+			_, err := blst.PublicKeyFromBytes(pubkeyBytes)
+			require.NoError(b, err)
+		}
+	})
 
 	b.Run("cache off", func(b *testing.B) {
 		// blst.DisableCaches()
