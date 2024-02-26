@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/berachain/comet-bls12-381/bls/blst"
+	"github.com/itsdevbear/comet-bls12-381/bls/blst"
 )
 
 func TestMarshalUnmarshal(t *testing.T) {

@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/berachain/comet-bls12-381/bls"
-	"github.com/berachain/comet-bls12-381/bls/rand"
+	"github.com/itsdevbear/comet-bls12-381/bls"
+	"github.com/itsdevbear/comet-bls12-381/bls/rand"
 
 	blst "github.com/supranational/blst/bindings/go"
 )
@@ -34,7 +34,7 @@ func RandKey() (bls.SecretKey, error) {
 
 // SecretKeyFromBytes creates a BLS private key from a BigEndian byte slice.
 func SecretKeyFromBytes(privKey []byte) (bls.SecretKey, error) {
-	if len(privKey) != 32 { // TODO: use config
+	if len(privKey) != 32 {
 		return nil, fmt.Errorf("secret key must be %d bytes", 32)
 	}
 	if IsZero(privKey) {

@@ -6,9 +6,9 @@ import (
 	"errors"
 	"fmt"
 
-	bls "github.com/berachain/comet-bls12-381/bls"
-	"github.com/berachain/comet-bls12-381/bls/cache"
-	"github.com/berachain/comet-bls12-381/bls/params"
+	bls "github.com/itsdevbear/comet-bls12-381/bls"
+	"github.com/itsdevbear/comet-bls12-381/bls/cache"
+	"github.com/itsdevbear/comet-bls12-381/bls/params"
 )
 
 var maxKeys = 2_000_000

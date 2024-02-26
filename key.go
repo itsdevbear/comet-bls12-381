@@ -28,13 +28,15 @@ package bls
 import (
 	"bytes"
 
+	"github.com/minio/sha256-simd"
+
 	"github.com/cometbft/cometbft/crypto"
 	cmcrypto "github.com/cometbft/cometbft/crypto"
 	"github.com/cometbft/cometbft/crypto/tmhash"
 	cmtjson "github.com/cometbft/cometbft/libs/json"
 
-	"github.com/berachain/comet-bls12-381/bls/blst"
-	"github.com/berachain/comet-bls12-381/bls/params"
+	"github.com/itsdevbear/comet-bls12-381/bls/blst"
+	"github.com/itsdevbear/comet-bls12-381/bls/params"
 )
 
 const (
@@ -112,7 +114,13 @@ func (privKey PrivKey) Sign(digestBz []byte) ([]byte, error) {
 		return nil, err
 	}
 
-	sig := secretKey.Sign(digestBz)
+	bz := digestBz
+	if len(bz) > 32 {
+		hash := sha256.Sum256(bz)
+		bz = hash[:]
+	}
+
+	sig := secretKey.Sign(bz)
 	return sig.Marshal(), nil
 }
 
@@ -144,12 +152,14 @@ func (pubKey PubKey) VerifySignature(msg, sig []byte) bool {
 	if len(sig) != params.BLSSignatureLength {
 		return false
 	}
-	if len(msg) != 32 { //nolint:gomnd // bls this bls that...
-		return false
+	bz := msg
+	if len(msg) > 32 {
+		hash := sha256.Sum256(msg)
+		bz = hash[:]
 	}
 
 	pubK, _ := blst.PublicKeyFromBytes(pubKey)
-	ok, err := blst.VerifySignature(sig, [32]byte(msg[:32]), pubK)
+	ok, err := blst.VerifySignature(sig, [32]byte(bz[:32]), pubK)
 	if err != nil {
 		return false
 	}

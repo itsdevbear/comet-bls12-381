@@ -6,8 +6,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/berachain/comet-bls12-381/bls"
-	"github.com/berachain/comet-bls12-381/bls/params"
+	"github.com/itsdevbear/comet-bls12-381/bls"
+	"github.com/itsdevbear/comet-bls12-381/bls/params"
 )
 
 var dst = []byte("BLS_SIG_BLS12381G2_XMD:SHA-256_SSWU_RO_POP_")

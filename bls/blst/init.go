@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"runtime"
 
-	"github.com/berachain/comet-bls12-381/bls"
-	"github.com/berachain/comet-bls12-381/bls/cache"
+	"github.com/itsdevbear/comet-bls12-381/bls"
+	"github.com/itsdevbear/comet-bls12-381/bls/cache"
 	blst "github.com/supranational/blst/bindings/go"
 )
 
