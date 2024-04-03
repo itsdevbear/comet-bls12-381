@@ -28,9 +28,20 @@ func (s *Signature) Copy() bls.Signature {
 	return &Signature{s: &sign}
 }
 
+// Verify a signature using a public key and message.
 func (s *Signature) Verify(pubKey bls.PubKey, msg []byte) bool {
 	// Signature and PKs are assumed to have been validated upon decompression!
 	return s.s.Verify(false, pubKey.(*PublicKey).p, false, msg, dst)
+}
+
+// VerifyWithPubkeyBytes verifies a signature using a public key and message.
+func (s *Signature) VerifyWithPubkeyBytes(pubKey []byte, msg []byte) bool {
+	// Signature and PKs are assumed to have been validated upon decompression!
+	pk, err := PublicKeyFromBytes(pubKey)
+	if err != nil {
+		return false
+	}
+	return s.s.Verify(false, pk.(*PublicKey).p, false, msg, dst)
 }
 
 // VerifySignature verifies a single signature using public key and message.
