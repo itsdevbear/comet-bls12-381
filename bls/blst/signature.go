@@ -34,14 +34,25 @@ func (s *Signature) Verify(pubKey bls.PubKey, msg []byte) bool {
 	return s.s.Verify(false, pubKey.(*PublicKey).p, false, msg, dst)
 }
 
-// VerifyWithPubkeyBytes verifies a signature using a public key and message.
-func (s *Signature) VerifyWithPubkeyBytes(pubKey []byte, msg []byte) bool {
-	// Signature and PKs are assumed to have been validated upon decompression!
-	pk, err := PublicKeyFromBytes(pubKey)
+// VerifySignaturePubkeyBytes checks if a given signature is valid for a
+// message and public key.
+// It returns true if the signature is valid, otherwise it panics if an error
+// occurs during the verification process.
+func VerifySignaturePubkeyBytes(
+	pubKey []byte,
+	msg []byte,
+	signature []byte,
+) bool {
+	pubkey, err := PublicKeyFromBytes(pubKey[:])
 	if err != nil {
 		return false
 	}
-	return s.s.Verify(false, pk.(*PublicKey).p, false, msg, dst)
+	sig, err := SignatureFromBytes(signature[:])
+	if err != nil {
+		return false
+	}
+
+	return sig.Verify(pubkey, msg)
 }
 
 // VerifySignature verifies a single signature using public key and message.
