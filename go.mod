@@ -3,7 +3,7 @@ module github.com/itsdevbear/comet-bls12-381
 go 1.22.0
 
 require (
-	github.com/cometbft/cometbft v0.38.5
+	github.com/cometbft/cometbft v0.38.6
 	github.com/minio/sha256-simd v1.0.1
 	github.com/stretchr/testify v1.8.4
 	github.com/supranational/blst v0.3.11
