@@ -1,12 +1,12 @@
 package bls_test
 
 import (
+	"crypto/rand"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/cometbft/cometbft/crypto"
 	bls "github.com/itsdevbear/comet-bls12-381"
 )
 
@@ -15,7 +15,9 @@ func TestSignAndValidateBLS12381(t *testing.T) {
 	require.NoError(t, err)
 	pubKey := privKey.PubKey()
 
-	msg := crypto.CRandBytes(32)
+	msg := make([]byte, 32)
+	_, err = rand.Read(msg)
+	require.NoError(t, err)
 	sig, err := privKey.Sign(msg)
 	require.NoError(t, err)
 
@@ -28,7 +30,9 @@ func TestSignAndValidateBLS12381(t *testing.T) {
 
 	assert.False(t, pubKey.VerifySignature(msg, sig))
 
-	msg = crypto.CRandBytes(192)
+	msg = make([]byte, 192)
+	_, err = rand.Read(msg)
+	require.NoError(t, err)
 	sig, err = privKey.Sign(msg)
 	require.NoError(t, err)
 
