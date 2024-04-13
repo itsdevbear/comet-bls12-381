@@ -30,8 +30,7 @@ import (
 
 	"github.com/minio/sha256-simd"
 
-	"github.com/cometbft/cometbft/crypto"
-	cmcrypto "github.com/cometbft/cometbft/crypto"
+	cmtcrypto "github.com/cometbft/cometbft/crypto"
 	"github.com/cometbft/cometbft/crypto/tmhash"
 	cmtjson "github.com/cometbft/cometbft/libs/json"
 
@@ -68,7 +67,7 @@ func init() {
 // Cosmos SDK.
 
 // Compile-time type assertion.
-var _ cmcrypto.PrivKey = &PrivKey{}
+var _ cmtcrypto.PrivKey = &PrivKey{}
 
 type PrivKey []byte
 
@@ -92,14 +91,14 @@ func (privKey PrivKey) Bytes() []byte {
 
 // PubKey returns the ECDSA private key's public key. If the privkey is not valid
 // it returns a nil value.
-func (privKey PrivKey) PubKey() cmcrypto.PubKey {
+func (privKey PrivKey) PubKey() cmtcrypto.PubKey {
 	secretKey, _ := blst.SecretKeyFromBytes(privKey)
 
 	return PubKey(secretKey.PublicKey().Marshal())
 }
 
 // Equals returns true if two ECDSA private keys are equal and false otherwise.
-func (privKey PrivKey) Equals(other crypto.PrivKey) bool {
+func (privKey PrivKey) Equals(other cmtcrypto.PrivKey) bool {
 	return privKey.Type() == other.Type() && bytes.Equal(privKey.Bytes(), other.Bytes())
 }
 
@@ -133,19 +132,19 @@ func (privKey PrivKey) Sign(digestBz []byte) ([]byte, error) {
 // Cosmos SDK.
 
 // Compile-time type assertion.
-var _ cmcrypto.PubKey = &PubKey{}
+var _ cmtcrypto.PubKey = &PubKey{}
 
 type PubKey []byte
 
 // Address returns the address of the ECDSA public key.
 // The function will return an empty address if the public key is invalid.
-func (pubKey PubKey) Address() cmcrypto.Address {
+func (pubKey PubKey) Address() cmtcrypto.Address {
 	pk, _ := blst.PublicKeyFromBytes(pubKey)
 	if len(pk.Marshal()) != PubKeySize {
 		panic("pubkey is incorrect size")
 	}
 	// TODO: do we want to keep this address format?
-	return crypto.Address(tmhash.SumTruncated(pubKey))
+	return cmtcrypto.Address(tmhash.SumTruncated(pubKey))
 }
 
 func (pubKey PubKey) VerifySignature(msg, sig []byte) bool {
@@ -177,6 +176,6 @@ func (pubKey PubKey) Type() string {
 }
 
 // Equals returns true if the pubkey type is the same and their bytes are deeply equal.
-func (pubKey PubKey) Equals(other cmcrypto.PubKey) bool {
+func (pubKey PubKey) Equals(other cmtcrypto.PubKey) bool {
 	return pubKey.Type() == other.Type() && bytes.Equal(pubKey.Bytes(), other.Bytes())
 }
